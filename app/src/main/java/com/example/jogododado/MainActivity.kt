@@ -34,9 +34,23 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun JogoDoDado(modifier: Modifier = Modifier) {
 
-    var result by remember { mutableStateOf(1) }
+    var dado1 by remember { mutableStateOf(1) }
+    var dado2 by remember { mutableStateOf(1) }
 
-    val imagemResult = when (result) {
+    val soma = dado1 + dado2
+
+    var total by remember { mutableStateOf(0) }
+
+    val imagemDado1 = when (dado1) {
+        1 -> R.drawable.dice_1
+        2 -> R.drawable.dice_2
+        3 -> R.drawable.dice_3
+        4 -> R.drawable.dice_4
+        5 -> R.drawable.dice_5
+        else -> R.drawable.dice_6
+    }
+
+    val imagemDado2 = when (dado2) {
         1 -> R.drawable.dice_1
         2 -> R.drawable.dice_2
         3 -> R.drawable.dice_3
@@ -46,24 +60,64 @@ fun JogoDoDado(modifier: Modifier = Modifier) {
     }
 
     Column(
-        modifier = modifier,
+        modifier = modifier.padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
 
-        Image(
-            painter = painterResource(imagemResult),
-            contentDescription = "Dado"
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = "Soma")
+            Text(text = soma.toString())
+        }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(imagemDado1),
+                contentDescription = "Dado 1"
+            )
+
+            Image(
+                painter = painterResource(imagemDado2),
+                contentDescription = "Dado 2"
+            )
+        }
 
         Button(
             onClick = {
-                result = Random.nextInt(1, 7)
+                dado1 = Random.nextInt(1, 7)
+                dado2 = Random.nextInt(1, 7)
+
+                total += (dado1 + dado2)
             }
         ) {
             Text(text = stringResource(R.string.roll))
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Button(
+                onClick = {
+                    total = 0
+                    dado1 = 1
+                    dado2 = 1
+                }
+            ) {
+                Text(text = "Resetar")
+            }
+
+            Column(horizontalAlignment = Alignment.End) {
+                Text(text = "Total")
+                Text(text = total.toString())
+            }
         }
     }
 }
